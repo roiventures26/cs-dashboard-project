@@ -1,0 +1,21 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (futuro)
+node_modules/
+.env
+.env.local
+.env.production
+
+# Supabase local
+.supabase/
+
+# Logs
+*.log

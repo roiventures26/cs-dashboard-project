@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Onboarding ROI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FF9900;
+      --green: #22c55e;
+      --green-dark: #14532d;
+      --black: #080808;
+      --card: #141414;
+      --card-hover: #1e1e1e;
+      --border: #2a2a2a;
+      --white: #ffffff;
+      --gray: #888888;
+      --gray-light: #bbbbbb;
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      background: var(--black);
+      color: var(--white);
+    }
+
+    .container {
+      max-width: 1800px;
+      margin: 0 auto;
+      padding: 32px 40px;
+    }
+    @media (min-width: 1920px) {
+      .container { max-width: 95vw; }
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .header-left h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .header-left h1 em { color: var(--yellow); font-style: normal; }
+    .header-left .subtitle {
+      font-size: 13px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--gray-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn:hover { background: var(--card-hover); border-color: #444; color: var(--white); }
+    .btn-danger { border-color: #7f1d1d; color: #f87171; }
+    .btn-danger:hover { background: #1a0505; border-color: #ef4444; }
+    .btn-export { border-color: var(--green-dark); color: var(--green); }
+    .btn-export:hover { background: #05140a; border-color: var(--green); }
+    .btn-small { padding: 8px 16px; font-size: 12px; }
+
+    /* Summary Cards - CHANGE 9: score ranges */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .summary-card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+    }
+    .summary-card .label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray);
+      margin-bottom: 8px;
+    }
+    .score-range {
+      font-size: 10px; color: var(--gray); letter-spacing: 0.3px;
+      margin-top: 2px;
+    }
+    .summary-card .value {
+      font-size: 28px;
+      font-weight: 800;
+    }
+    .value small {
+      font-size: 12px; color: var(--gray); font-weight: 400;
+    }
+    .summary-card.total .value { color: var(--white); }
+    .summary-card.tier-a .value { color: #22c55e; }
+    .summary-card.tier-b .value { color: #3b82f6; }
+    .summary-card.tier-c .value { color: #eab308; }
+    .summary-card.tier-d .value { color: #f97316; }
+    .summary-card.tier-e .value { color: #ef4444; }
+
+    /* CHANGE 10: Filters */
+    .filters-bar {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .filter-group { display: flex; flex-direction: column; gap: 4px; }
+    .filter-group label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: var(--gray);
+    }
+    .filter-group input, .filter-group select {
+      background: var(--black); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--white); padding: 8px 12px;
+      font-family: 'Inter', sans-serif; font-size: 13px;
+    }
+
+    /* Search bar */
+    .search-bar {
+      position: relative;
+      margin-bottom: 20px;
+    }
+    .search-bar input {
+      width: 100%;
+      padding: 14px 20px 14px 48px;
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      transition: border-color 0.2s ease;
+    }
+    .search-bar input:focus {
+      outline: none;
+      border-color: var(--yellow);
+    }
+    .search-bar input::placeholder { color: var(--gray); }
+    .search-bar-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      pointer-events: none;
+    }
+    .search-bar-clear {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--card-hover);
+      border: 1px solid var(--border);
+      color: var(--gray-light);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: none;
+    }
+    .search-bar-clear.visible { display: block; }
+    .search-bar-clear:hover { color: var(--white); border-color: var(--yellow); }
+    .search-match-count {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      color: var(--gray);
+      display: none;
+    }
+    .search-match-count.visible { display: block; }
+
+    /* Highlight search matches */
+    .search-highlight {
+      background: rgba(255,153,0,0.35);
+      color: #fff;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    /* CNAE Opportunities highlight section */
+    .cnae-section {
+      margin-top: 48px;
+      background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(22,163,74,0.03));
+      border: 2px solid rgba(34,197,94,0.4);
+      border-radius: 14px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cnae-section::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 4px;
+      background: linear-gradient(180deg, var(--green), #4ade80);
+    }
+    .cnae-section.empty {
+      background: rgba(255,255,255,0.01);
+      border-color: var(--border);
+      opacity: 0.6;
+    }
+    .cnae-section.empty::before { background: var(--border); }
+    .cnae-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .cnae-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cnae-title-icon {
+      width: 42px; height: 42px;
+      background: rgba(34,197,94,0.18);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .cnae-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--white);
+      margin: 0;
+    }
+    .cnae-title em {
+      color: var(--green);
+      font-style: normal;
+    }
+    .cnae-subtitle {
+      font-size: 12px;
+      color: var(--gray-light);
+      margin: 2px 0 0 0;
+    }
+    .cnae-count-badge {
+      background: var(--green);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 99px;
+      box-shadow: 0 0 16px rgba(34,197,94,0.4);
+    }
+    .cnae-count-badge.zero {
+      background: #333;
+      color: var(--gray);
+      box-shadow: none;
+    }
+    .cnae-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .cnae-row {
+      display: grid;
+      grid-template-columns: minmax(140px, 1.5fr) minmax(140px, 1.2fr) minmax(180px, 1.5fr) auto auto;
+      gap: 14px;
+      align-items: center;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(34,197,94,0.2);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+    .cnae-row:hover { border-color: rgba(34,197,94,0.5); }
+    .cnae-row .cnae-name {
+      color: var(--white);
+      font-weight: 600;
+    }
+    .cnae-row .cnae-time {
+      color: var(--gray);
+      font-size: 11px;
+    }
+    .cnae-row .cnae-whatsapp a {
+      color: var(--green);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .cnae-row .cnae-whatsapp a:hover { text-decoration: underline; }
+    .cnae-row .cnae-email {
+      color: var(--gray-light);
+      font-size: 12px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cnae-row .cnae-tier {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+    }
+    .cnae-empty-text {
+      font-size: 13px;
+      color: var(--gray);
+      text-align: center;
+      padding: 12px 0;
+    }
+    @media (max-width: 760px) {
+      .cnae-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+    }
+
+    /* Table */
+    .table-wrap {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .table-scroll {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+    thead th {
+      background: #1a1a1a;
+      padding: 12px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    tbody tr {
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    tbody tr:hover { background: var(--card-hover); }
+    tbody td {
+      padding: 12px 14px;
+      font-size: 13px;
+      color: var(--gray-light);
+      border-bottom: 1px solid #1e1e1e;
+      white-space: nowrap;
+    }
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .tier-badge.tier-A { background: #14532d; color: #22c55e; }
+    .tier-badge.tier-B { background: #0c2d48; color: #3b82f6; }
+    .tier-badge.tier-C { background: #422006; color: #eab308; }
+    .tier-badge.tier-D { background: #431407; color: #f97316; }
+    .tier-badge.tier-E { background: #450a0a; color: #ef4444; }
+    /* Override highlights */
+    .tier-badge.override-alto {
+      background: linear-gradient(135deg, #6b4f00, #c8a000, #6b4f00);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(200,160,0,0.5);
+      font-size: 12px;
+      padding: 4px 12px;
+      animation: gold-pulse 2s ease infinite;
+    }
+    @keyframes gold-pulse {
+      0%, 100% { box-shadow: 0 0 8px rgba(200,160,0,0.4); }
+      50% { box-shadow: 0 0 18px rgba(200,160,0,0.7); }
+    }
+    .tier-badge.override-baixo {
+      background: #5c0a0a;
+      color: #ff6b6b;
+      box-shadow: 0 0 10px rgba(239,68,68,0.4);
+      font-size: 12px;
+      padding: 4px 12px;
+    }
+    .override-row-alto { background: rgba(200,160,0,0.06) !important; }
+    .override-row-baixo { background: rgba(239,68,68,0.06) !important; }
+
+    /* Expanded row */
+    .expanded-row td {
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .expanded-content {
+      padding: 24px 28px;
+      background: #0d0d0d;
+      border-left: 3px solid var(--yellow);
+      margin: 4px 0;
+    }
+    .quick-actions-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed rgba(255,255,255,0.08);
+    }
+    .quick-actions-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray);
+      margin-right: 8px;
+    }
+    .qa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--gray-light);
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .qa-btn:hover {
+      background: var(--card-hover);
+      border-color: var(--yellow);
+      color: var(--white);
+    }
+    .qa-btn.qa-btn-wp {
+      background: rgba(34,197,94,0.1);
+      border-color: rgba(34,197,94,0.4);
+      color: #4ade80;
+    }
+    .qa-btn.qa-btn-wp:hover {
+      background: rgba(34,197,94,0.2);
+      border-color: var(--green);
+      color: #fff;
+    }
+    .expanded-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+      padding: 8px 0;
+    }
+    .expanded-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      padding: 10px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .expanded-item .el { color: var(--gray); font-weight: 600; font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .expanded-item .ev { color: var(--gray-light); font-size: 13px; word-break: break-word; }
+    .expanded-score {
+      background: rgba(255,153,0,0.1);
+      border: 1px solid rgba(255,153,0,0.35);
+    }
+    .expanded-score .el { color: var(--yellow); }
+    .expanded-score .ev { color: var(--white); font-weight: 700; font-size: 14px; }
+    .expanded-score-alto {
+      background: rgba(200,160,0,0.15) !important;
+      border: 1.5px solid rgba(200,160,0,0.6) !important;
+      box-shadow: 0 0 12px rgba(200,160,0,0.2);
+    }
+    .expanded-score-alto .el { color: #f0c040 !important; }
+    .expanded-score-baixo {
+      background: rgba(239,68,68,0.1) !important;
+      border: 1.5px solid rgba(239,68,68,0.4) !important;
+      box-shadow: 0 0 10px rgba(239,68,68,0.15);
+    }
+    .expanded-score-baixo .el { color: #ff6b6b !important; }
+    .expanded-file .ev {
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .file-preview {
+      max-width: 200px; max-height: 150px;
+      border-radius: 8px; border: 1px solid var(--border);
+      cursor: pointer; transition: transform 0.2s ease;
+    }
+    .file-preview:hover { transform: scale(1.05); }
+    .file-download-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--card-hover); border: 1px solid var(--border);
+      border-radius: 6px; padding: 4px 10px;
+      color: var(--yellow); font-size: 11px; font-weight: 600;
+      text-decoration: none; cursor: pointer; width: fit-content;
+    }
+    .file-download-btn:hover { border-color: var(--yellow); }
+
+    .empty-staté {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--gray);
+    }
+    .empty-staté h3 { font-size: 18px; color: var(--gray-light); margin-bottom: 8px; }
+    .empty-staté p { font-size: 14px; }
+
+    /* Trending section */
+    .trending-section {
+      margin-top: 48px;
+    }
+    .trending-section h2 {
+      font-size: 20px; font-weight: 700; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .trending-section .trending-sub {
+      font-size: 13px; color: var(--gray); margin-bottom: 20px;
+    }
+    .trending-tabs {
+      display: inline-flex;
+      gap: 4px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+    }
+    .trending-tab {
+      background: transparent;
+      border: none;
+      color: var(--gray-light);
+      padding: 8px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+    }
+    .trending-tab:hover { color: var(--white); }
+    .trending-tab.active {
+      background: var(--yellow);
+      color: #000;
+    }
+    .trending-summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .trending-kpi {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .trending-kpi .tk-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+    .trending-kpi .tk-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .trending-kpi .tk-value small {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--gray);
+      margin-left: 4px;
+    }
+    .trending-kpi .tk-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 6px;
+      padding: 2px 6px;
+      border-radius: 99px;
+    }
+    .trending-kpi .tk-trend.up { color: #22c55e; background: rgba(34,197,94,0.12); }
+    .trending-kpi .tk-trend.down { color: #ef4444; background: rgba(239,68,68,0.12); }
+    .trending-kpi .tk-trend.flat { color: var(--gray); background: rgba(255,255,255,0.05); }
+
+    .trending-chart {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .trending-chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gray-light);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .trending-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 180px;
+      padding: 0 4px;
+      border-bottom: 1px solid #1e1e1e;
+      margin-bottom: 12px;
+      position: relative;
+    }
+    .trending-bar-col {
+      flex: 1;
+      min-width: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+      position: relative;
+      cursor: default;
+    }
+    .trending-bar {
+      width: 100%;
+      max-width: 40px;
+      background: linear-gradient(180deg, #ffcc44, var(--yellow));
+      border-radius: 4px 4px 0 0;
+      min-height: 1px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .trending-bar-col:hover .trending-bar {
+      background: linear-gradient(180deg, #fff, var(--yellow));
+      box-shadow: 0 0 20px rgba(255,153,0,0.35);
+    }
+    .trending-bar-value {
+      position: absolute;
+      top: -20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--white);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .trending-bar-col:hover .trending-bar-value { opacity: 1; }
+    .trending-bar-col.has-value .trending-bar-value { opacity: 0.7; }
+    .trending-labels {
+      display: flex;
+      gap: 8px;
+      padding: 0 4px;
+    }
+    .trending-label {
+      flex: 1;
+      min-width: 18px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .trending-label.today {
+      color: var(--yellow);
+      font-weight: 700;
+    }
+
+    /* Funnel section */
+    .funnel-section { margin-top: 48px; }
+    .funnel-section h2 {
+      font-size: 20px; font-weight: 700; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .funnel-section .funnel-sub {
+      font-size: 13px; color: var(--gray); margin-bottom: 24px;
+    }
+    .funnel-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .funnel-kpi {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 14px 16px;
+    }
+    .funnel-kpi .fk-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--gray); margin-bottom: 6px;
+    }
+    .funnel-kpi .fk-value { font-size: 22px; font-weight: 800; color: var(--white); }
+    .funnel-kpi .fk-value small { font-size: 11px; color: var(--gray); font-weight: 500; margin-left: 4px; }
+    .funnel-kpi.started .fk-value { color: var(--yellow); }
+    .funnel-kpi.completed .fk-value { color: var(--green); }
+    .funnel-kpi.abandoned .fk-value { color: #ef4444; }
+    .funnel-kpi.conversion .fk-value { color: #3b82f6; }
+
+    .funnel-list {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; overflow: hidden;
+    }
+    .funnel-row {
+      display: grid;
+      grid-template-columns: 36px minmax(180px, 1.8fr) 1fr 90px 110px;
+      gap: 12px; align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid #1e1e1e;
+      font-size: 12px;
+    }
+    .funnel-row:last-child { border-bottom: none; }
+    .funnel-row.completed-row { background: rgba(34,197,94,0.04); }
+    .funnel-row .fr-num {
+      font-size: 10px; font-weight: 700; color: var(--gray);
+      background: #1e1e1e; border-radius: 6px;
+      padding: 4px 0; text-align: center;
+    }
+    .funnel-row .fr-label {
+      color: var(--white); font-weight: 600; font-size: 13px;
+    }
+    .funnel-row .fr-label small {
+      display: block; font-weight: 400; font-size: 10px;
+      color: var(--gray); margin-top: 2px;
+    }
+    .funnel-row .fr-bar-wrap {
+      position: relative; height: 22px;
+      background: #1a1a1a; border-radius: 6px; overflow: hidden;
+    }
+    .funnel-row .fr-bar-fill {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      background: linear-gradient(90deg, var(--yellow), #ffcc44);
+      border-radius: 6px;
+      transition: width 0.4s ease;
+    }
+    .funnel-row.completed-row .fr-bar-fill {
+      background: linear-gradient(90deg, var(--green-dark), var(--green));
+    }
+    .funnel-row .fr-bar-label {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; padding-left: 10px;
+      font-size: 11px; font-weight: 700; color: var(--white);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+    }
+    .funnel-row .fr-count {
+      text-align: right; color: var(--white); font-weight: 700;
+    }
+    .funnel-row .fr-count small { display: block; color: var(--gray); font-weight: 500; }
+    .funnel-row .fr-drop {
+      text-align: right; font-size: 11px;
+    }
+    .funnel-row .fr-drop.no-drop { color: var(--gray); }
+    .funnel-row .fr-drop.has-drop { color: #ef4444; font-weight: 600; }
+
+    @media (max-width: 760px) {
+      .funnel-row {
+        grid-template-columns: 28px minmax(140px, 1.6fr) 80px;
+      }
+      .funnel-row .fr-bar-wrap, .funnel-row .fr-drop { display: none; }
+    }
+
+    /* CHANGE 8: Analytics section */
+    .analytics-section { margin-top: 48px; }
+    .analytics-section h2 { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
+    .analytics-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 16px;
+    }
+    .analytics-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+    }
+    .analytics-card h3 {
+      font-size: 14px; font-weight: 600; color: var(--white);
+      margin-bottom: 16px;
+    }
+    .analytics-bars { display: flex; flex-direction: column; gap: 8px; }
+    .analytics-bar-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .bar-label {
+      font-size: 12px; color: var(--gray-light);
+      min-width: 120px; text-align: right;
+    }
+    .bar-track {
+      flex: 1; height: 8px; background: #1e1e1e;
+      border-radius: 99px; overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--yellow), #ffcc44);
+      border-radius: 99px;
+      transition: width 0.3s ease;
+    }
+    .bar-value {
+      font-size: 11px; color: var(--gray);
+      min-width: 60px;
+    }
+
+    @media (max-width: 600px) {
+      .summary-row { grid-template-columns: repeat(3, 1fr); }
+      .container { padding: 16px 12px; }
+      .filters-bar { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>Dashboard Onboarding <em>ROI</em></h1>
+        <div class="subtitle" id="subtitle">Carregando...</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-export" onclick="exportCSV()">Exportar CSV</button>
+        <button class="btn btn-danger" onclick="clearData()">Limpar dados</button>
+      </div>
+    </div>
+
+    <!-- CHANGE 9: Tier cards with score ranges -->
+    <div class="summary-row" id="summary-row">
+      <div class="summary-card total"><div class="label">Total Leads</div><div class="value" id="count-total">0</div></div>
+      <div class="summary-card tier-a"><div class="label">Tier A</div><div class="score-range">Score: 85-100</div><div class="value" id="count-a">0</div></div>
+      <div class="summary-card tier-b"><div class="label">Tier B</div><div class="score-range">Score: 70-84</div><div class="value" id="count-b">0</div></div>
+      <div class="summary-card tier-c"><div class="label">Tier C</div><div class="score-range">Score: 50-69</div><div class="value" id="count-c">0</div></div>
+      <div class="summary-card tier-d"><div class="label">Tier D</div><div class="score-range">Score: 30-49</div><div class="value" id="count-d">0</div></div>
+      <div class="summary-card tier-e"><div class="label">Tier E</div><div class="score-range">Score: 0-29</div><div class="value" id="count-e">0</div></div>
+    </div>
+
+    <!-- Search bar -->
+    <div class="search-bar">
+      <svg class="search-bar-icon" width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="7" cy="7" r="5"/><path d="m14 14-2.5-2.5"/>
+      </svg>
+      <input type="text" id="search-input" placeholder="Buscar por nome, email, WhatsApp ou CPF..." oninput="handleSearchInput()" />
+      <button class="search-bar-clear" id="search-clear" onclick="clearSearch()">Limpar</button>
+      <div class="search-match-count" id="search-match-count"></div>
+    </div>
+
+    <!-- CHANGE 10: Filters bar -->
+    <div class="filters-bar">
+      <div class="filter-group">
+        <label>Data inicio</label>
+        <input type="date" id="filter-date-start" onchange="render()" />
+      </div>
+      <div class="filter-group">
+        <label>Data fim</label>
+        <input type="date" id="filter-date-end" onchange="render()" />
+      </div>
+      <div class="filter-group">
+        <label>Score mínimo</label>
+        <input type="number" id="filter-score-min" min="0" max="100" placeholder="0" onchange="render()" />
+      </div>
+      <div class="filter-group">
+        <label>Score máximo</label>
+        <input type="number" id="filter-score-max" min="0" max="100" placeholder="100" onchange="render()" />
+      </div>
+      <div class="filter-group">
+        <label>Tier</label>
+        <select id="filter-tier" onchange="render()">
+          <option value="">Todos</option>
+          <option value="A">Tier A</option>
+          <option value="B">Tier B</option>
+          <option value="C">Tier C</option>
+          <option value="D">Tier D</option>
+          <option value="E">Tier E</option>
+        </select>
+      </div>
+      <button class="btn btn-small" onclick="clearFilters()">Limpar filtros</button>
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Data/Hora</th>
+              <th>Nome</th>
+              <th>WhatsApp</th>
+              <th>Email</th>
+              <th>Profissao</th>
+              <th>Investimento Inicial</th>
+              <th>Reinvestimento 4m</th>
+              <th>Horas/dia</th>
+              <th>Score</th>
+              <th>Tier</th>
+            </tr>
+          </thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        <h3>Nenhuma submissao encontrada</h3>
+        <p>As respostas do formulario de onboarding aparecerao aqui automaticamente.</p>
+      </div>
+    </div>
+
+    <!-- Trending: Diário / Semanal / Mensal -->
+    <div class="trending-section" id="trending-section">
+      <h2>📈 Tendência de captação</h2>
+      <p class="trending-sub">Volume de leads ao longo do tempo com variação vs período anterior.</p>
+
+      <div class="trending-tabs">
+        <button class="trending-tab active" data-period="daily" onclick="setTrendingPeriod('daily')">Diário</button>
+        <button class="trending-tab" data-period="weekly" onclick="setTrendingPeriod('weekly')">Semanal</button>
+        <button class="trending-tab" data-period="monthly" onclick="setTrendingPeriod('monthly')">Mensal</button>
+      </div>
+
+      <div class="trending-summary-row">
+        <div class="trending-kpi">
+          <div class="tk-label" id="tk-label-current">Hoje</div>
+          <div class="tk-value"><span id="tk-current">0</span><small>leads</small><span class="tk-trend flat" id="tk-delta">—</span></div>
+        </div>
+        <div class="trending-kpi">
+          <div class="tk-label" id="tk-label-previous">Ontem</div>
+          <div class="tk-value"><span id="tk-previous">0</span><small>leads</small></div>
+        </div>
+        <div class="trending-kpi">
+          <div class="tk-label" id="tk-label-avg">Média (últimos 7 dias)</div>
+          <div class="tk-value"><span id="tk-avg">0</span><small>leads/dia</small></div>
+        </div>
+        <div class="trending-kpi">
+          <div class="tk-label" id="tk-label-peak">Pico no período</div>
+          <div class="tk-value"><span id="tk-peak">0</span><small id="tk-peak-when">—</small></div>
+        </div>
+      </div>
+
+      <div class="trending-chart">
+        <div class="trending-chart-title" id="trending-chart-title">Últimos 14 dias</div>
+        <div class="trending-bars" id="trending-bars"></div>
+        <div class="trending-labels" id="trending-labels"></div>
+      </div>
+    </div>
+
+    <!-- CNAE Opportunities (upsell de receita) -->
+    <div class="cnae-section" id="cnae-section">
+      <div class="cnae-header">
+        <div class="cnae-title-wrap">
+          <div class="cnae-title-icon">💰</div>
+          <div>
+            <h2 class="cnae-title">Oportunidades de <em>upsell CNPJ</em></h2>
+            <p class="cnae-subtitle">Leads que pediram contato sobre CNAEs extras (receita adicional)</p>
+          </div>
+        </div>
+        <div class="cnae-count-badge" id="cnae-count-badge">0</div>
+      </div>
+      <div class="cnae-list" id="cnae-list"></div>
+    </div>
+
+    <!-- Funnel de conversão -->
+    <div class="funnel-section" id="funnel-section">
+      <h2>&#128202; Funil de Conversão</h2>
+      <p class="funnel-sub">Quantas pessoas chegaram em cada tela e onde elas saem do formulário.</p>
+
+      <div class="funnel-kpi-row">
+        <div class="funnel-kpi started"><div class="fk-label">Sessões iniciadas</div><div class="fk-value" id="fk-started">0</div></div>
+        <div class="funnel-kpi completed"><div class="fk-label">Concluídas</div><div class="fk-value" id="fk-completed">0</div></div>
+        <div class="funnel-kpi abandoned"><div class="fk-label">Abandonadas</div><div class="fk-value" id="fk-abandoned">0</div></div>
+        <div class="funnel-kpi conversion"><div class="fk-label">Taxa conversão</div><div class="fk-value" id="fk-conversion">0%</div></div>
+      </div>
+
+      <div class="funnel-list" id="funnel-list"></div>
+    </div>
+
+    <!-- CHANGE 8: Analytics per question -->
+    <div class="analytics-section" id="analytics-section">
+      <h2>Analise por Pergunta</h2>
+      <div class="analytics-grid" id="analytics-grid"></div>
+    </div>
+  </div>
+
+  <script>
+    var optionLabels = {
+      q2: ['Masculino', 'Feminino', 'Prefiro não informar'],
+      q3: ['Menos de 18 anos', 'Entre 18 e 24 anos', 'Entre 25 e 34 anos', 'Entre 35 e 44 anos', 'Acima de 45 anos'],
+      q4: ['CLT', 'Autonomo', 'Empresario', 'Desempregado', 'Estudante', 'Servidor Público', 'Outro'],
+      q5: ['Sim', 'Não', 'Uso compartilhado'],
+      q6: ['Manha', 'Tarde', 'Noite', 'Variado', 'Não definido'],
+      q7: ['Sim, já vendo', 'Sim, mas não vendo', 'Não tenho'],
+      q8: ['Sim', 'Não'],
+      q9: ['Renda extra', 'Aumentar renda', 'Viver da Amazon', 'Escalar negocio'],
+      q10: ['Não comecei', 'Em andamento', 'Produtos validados', 'Sim, em outro marketplace'],
+      q11: ['Não comecei', 'Em negociação', 'Já comprei', 'Sim, em outro marketplace'],
+      q12: ['Não tenho', 'Em análise/envio', 'Ativa', 'Sim, em outro marketplace'],
+      q13: ['Não', 'Sim, poucas vendas', 'Sim, vendas consistentes'],
+      q14: ['Menos de R$2.000', 'R$2.000 a R$5.000', 'R$5.000 a R$10.000', 'R$10.000 a R$20.000', 'Acima de R$20.000'],
+      q15: ['Não pretendo reinvestir', 'Até R$1.000/mes', 'R$1.000 a R$3.000/mes', 'R$3.000 a R$5.000/mes', 'Acima de R$5.000/mes'],
+      q16: ['Menos de 1h', '1 a 2h', '2 a 4h', 'Mais de 4h'],
+      q17: ['Nenhum', 'Básico', 'Intermediário', 'Avançado'],
+      q19: ['Nenhuma/dificuldade', 'Básico', 'Intermediário', 'Avançado'],
+      q20: ['Até R$5.000', 'R$5.000 a R$20.000', 'R$20.000 a R$50.000', 'Acima de R$50.000'],
+      q21: ['Eu mesmo', 'Sócio', 'Funcionário', 'Ainda não definido'],
+      q23: ['Eu mesmo', 'Sócio', 'Funcionário', 'Terceirizado'],
+      q25: ['Apenas eu', '2 sócios', '3 sócios', '4 ou mais'],
+      q29: ['R$ 5.000', 'R$ 7.000', 'R$ 10.000', '+ de R$ 10.000']
+    };
+
+    var questionLabels = {
+      name: 'Nome completo',
+      whatsapp: 'WhatsApp',
+      email: 'Email',
+      q2: 'Gênero',
+      q3: 'Faixa etária',
+      q4: 'Profissao',
+      q5: 'Computador próprio',
+      q6: 'Periodo operacao',
+      q7: 'Loja ativa Amazon',
+      q8: 'Vende outro marketplace',
+      q8_qual: 'Qual marketplace',
+      q9: 'Objetivo Amazon',
+      q10: 'Status Mineracao',
+      q11: 'Status Primeira Compra',
+      q12: 'Status Oferta',
+      q13: 'Status Primeira Venda',
+      q14: 'Investimento disponível',
+      q15: 'Reinvestimento 4 meses',
+      q16: 'Horas/dia operacao',
+      q17: 'Conhecimento Amazon',
+      q19: 'Habilidades PC',
+      q20: 'Meta faturamento 6m',
+      q21: 'Quem opera conta',
+      q23: 'Responsável loja',
+      q24: 'Não abrir sozinho',
+      q25: 'Qtd sócios',
+      q26: 'Dados pessoais (todos)',
+      q27: 'Razão Social',
+      q28: 'Nome Fantasia',
+      q29: 'Capital Social',
+      cnpj_exclusivity: 'CNPJ será exclusivo p/ marketplaces?',
+      cnpj_wants_contact: 'Quer contato sobre CNAEs extras?',
+      pessoas: 'Dados dos Sócios'
+    };
+    // Chaves que não devem ser mostradas no expanded (já renderizadas em outro lugar ou desnecessárias)
+    var hiddenKeys = ['pessoas_files', 'endereco', 'termos_aceitos', 'q29_custom', 'q25_total'];
+
+    function getLabel(key, val, answers) {
+      if (optionLabels[key] && typeof val === 'number') {
+        var label = optionLabels[key][val] || ('Opção ' + val);
+        // Caso especial: Capital Social com valor custom
+        if (key === 'q29' && val === 3 && answers && answers.q29_custom) {
+          label = 'R$ ' + Number(answers.q29_custom).toLocaleString('pt-BR');
+        }
+        return label;
+      }
+      // CNPJ exclusivity mapping
+      if (key === 'cnpj_exclusivity') {
+        if (val === 'exclusivo_marketplaces') return 'Sim, apenas marketplaces';
+        if (val === 'outras_finalidades') return 'Não, outras finalidades';
+      }
+      if (key === 'cnpj_wants_contact') {
+        if (val === true) return '✓ Sim, quer contato';
+        if (val === false) return '✗ Não quer contato';
+        if (val === null) return '-';
+      }
+      return val !== undefined && val !== null ? String(val) : '-';
+    }
+
+    function formatDate(iso) {
+      try {
+        var d = new Date(iso);
+        return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      } catch(e) { return iso; }
+    }
+
+    var expandedIdx = -1;
+    var searchQuery = '';
+
+    /* ==================== SEARCH ==================== */
+    function handleSearchInput() {
+      var input = document.getElementById('search-input');
+      searchQuery = input.value.trim().toLowerCase();
+      var clearBtn = document.getElementById('search-clear');
+      var countEl = document.getElementById('search-match-count');
+      if (searchQuery) {
+        clearBtn.classList.add('visible');
+        countEl.classList.remove('visible');
+      } else {
+        clearBtn.classList.remove('visible');
+        countEl.classList.remove('visible');
+      }
+      render();
+    }
+
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      searchQuery = '';
+      document.getElementById('search-clear').classList.remove('visible');
+      document.getElementById('search-match-count').classList.remove('visible');
+      render();
+    }
+
+    function matchesSearch(submission) {
+      if (!searchQuery) return true;
+      var a = submission.answers || {};
+      var p0 = (a.pessoas && a.pessoas[0]) || {};
+      var haystack = [
+        a.name, a.email, a.whatsapp,
+        p0.nome, p0.cpf, p0.whatsapp, p0.email
+      ];
+      // Also include all partners
+      if (Array.isArray(a.pessoas)) {
+        a.pessoas.forEach(function(p) {
+          haystack.push(p.nome, p.cpf, p.whatsapp, p.email);
+        });
+      }
+      return haystack.some(function(v) {
+        if (!v) return false;
+        var normalized = String(v).toLowerCase().replace(/[\s().\-]/g, '');
+        var needle = searchQuery.replace(/[\s().\-]/g, '');
+        return String(v).toLowerCase().indexOf(searchQuery) !== -1 ||
+               normalized.indexOf(needle) !== -1;
+      });
+    }
+
+    function highlightMatch(text) {
+      if (!searchQuery || !text) return text || '';
+      try {
+        var escaped = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        var regex = new RegExp('(' + escaped + ')', 'gi');
+        return String(text).replace(regex, '<span class="search-highlight">$1</span>');
+      } catch (e) { return text; }
+    }
+
+    /* Funnel screen labels (must match SCREEN_ORDER in the form) */
+    var FUNNEL_SCREENS = [
+      { id: 'screen-welcome', label: 'Tela inicial',        sub: 'Welcome / intro' },
+      { id: 'screen-1',       label: 'Q1: Dados pessoais',  sub: 'Nome, WhatsApp, e-mail' },
+      { id: 'screen-2',       label: 'Q2: Gênero',          sub: '' },
+      { id: 'screen-3',       label: 'Q3: Faixa etária',    sub: '' },
+      { id: 'screen-4',       label: 'Q4: Profissão',       sub: '' },
+      { id: 'screen-5',       label: 'Q5: Computador próprio', sub: '' },
+      { id: 'screen-6',       label: 'Q6: Período do dia',  sub: '' },
+      { id: 'screen-7',       label: 'Q7: Loja Amazon',     sub: '' },
+      { id: 'screen-8',       label: 'Q8: Outro marketplace', sub: '' },
+      { id: 'screen-9',       label: 'Q9: Objetivo',        sub: '' },
+      { id: 'screen-10',      label: 'Q10: Mineração',      sub: '' },
+      { id: 'screen-11',      label: 'Q11: Primeira compra', sub: '' },
+      { id: 'screen-12',      label: 'Q12: Oferta',         sub: '' },
+      { id: 'screen-13',      label: 'Q13: Primeira venda', sub: '' },
+      { id: 'screen-14',      label: 'Q14: Investimento',   sub: 'Pontua no score' },
+      { id: 'screen-15',      label: 'Q15: Reinvestimento', sub: 'Pontua no score' },
+      { id: 'screen-16',      label: 'Q16: Horas/dia',      sub: 'Pontua no score' },
+      { id: 'screen-17',      label: 'Q17: Conhecimento',   sub: 'Pontua no score' },
+      { id: 'screen-19',      label: 'Q19: Habilidades PC', sub: 'Pontua no score' },
+      { id: 'screen-20',      label: 'Q20: Meta 6 meses',   sub: '' },
+      { id: 'screen-22',      label: 'Q22: Intro CNPJ',     sub: 'Checklist documentos' },
+      { id: 'screen-23',      label: 'Q23: Responsável',    sub: '' },
+      { id: 'screen-24',      label: 'Q24: Compromisso',    sub: 'Checkbox de aceite' },
+      { id: 'screen-25',      label: 'Q25: Qtd sócios',     sub: '' },
+      { id: 'screen-26',      label: 'Q26: Dados pessoais + docs', sub: 'Tela longa (maior drop)' },
+      { id: 'screen-cnpj-exclusivity', label: 'CNPJ: Exclusividade', sub: 'Marketplaces ou outras finalidades' },
+      { id: 'screen-27',      label: 'Q27: Razão Social',   sub: '' },
+      { id: 'screen-28',      label: 'Q28: Nome Fantasia',  sub: '' },
+      { id: 'screen-29',      label: 'Q29: Capital Social', sub: '' },
+      { id: 'screen-30',      label: 'Q30: Termos + contrato', sub: '' },
+      { id: 'screen-loading', label: 'Loading: submissão',  sub: 'Processando envio' },
+      { id: 'screen-result',  label: '✅ Concluído',         sub: 'Formulário finalizado' }
+    ];
+
+    /* CHANGE 10: Filter logic */
+    function getFilteredSubmissions() {
+      var subs = JSON.parse(localStorage.getItem('roi_submissions') || '[]');
+
+      var dateStart = document.getElementById('filter-date-start') ? document.getElementById('filter-date-start').value : '';
+      var dateEnd = document.getElementById('filter-date-end') ? document.getElementById('filter-date-end').value : '';
+      var scoreMinVal = document.getElementById('filter-score-min') ? document.getElementById('filter-score-min').value : '';
+      var scoreMaxVal = document.getElementById('filter-score-max') ? document.getElementById('filter-score-max').value : '';
+      var tierFilter = document.getElementById('filter-tier') ? document.getElementById('filter-tier').value : '';
+
+      var scoreMin = scoreMinVal !== '' ? parseInt(scoreMinVal) : 0;
+      var scoreMax = scoreMaxVal !== '' ? parseInt(scoreMaxVal) : 100;
+
+      if (dateStart) {
+        subs = subs.filter(function(s) { return new Date(s.timestamp) >= new Date(dateStart); });
+      }
+      if (dateEnd) {
+        subs = subs.filter(function(s) { return new Date(s.timestamp) <= new Date(dateEnd + 'T23:59:59'); });
+      }
+      subs = subs.filter(function(s) {
+        var score = s.score && s.score.score !== undefined ? s.score.score : 0;
+        return score >= scoreMin && score <= scoreMax;
+      });
+      if (tierFilter) {
+        subs = subs.filter(function(s) { return s.score && s.score.tier === tierFilter; });
+      }
+
+      // Apply search query filter
+      if (searchQuery) {
+        subs = subs.filter(matchesSearch);
+      }
+
+      return subs;
+    }
+
+    function clearFilters() {
+      document.getElementById('filter-date-start').value = '';
+      document.getElementById('filter-date-end').value = '';
+      document.getElementById('filter-score-min').value = '';
+      document.getElementById('filter-score-max').value = '';
+      document.getElementById('filter-tier').value = '';
+      render();
+    }
+
+    function getFilteredSessions() {
+      var sessions = [];
+      try { sessions = JSON.parse(localStorage.getItem('roi_sessions') || '[]'); }
+      catch (e) { sessions = []; }
+
+      var dateStart = document.getElementById('filter-date-start') ? document.getElementById('filter-date-start').value : '';
+      var dateEnd = document.getElementById('filter-date-end') ? document.getElementById('filter-date-end').value : '';
+
+      if (dateStart) {
+        sessions = sessions.filter(function(s) { return new Date(s.startedAt) >= new Date(dateStart); });
+      }
+      if (dateEnd) {
+        sessions = sessions.filter(function(s) { return new Date(s.startedAt) <= new Date(dateEnd + 'T23:59:59'); });
+      }
+      return sessions;
+    }
+
+    function timeAgo(iso) {
+      try {
+        var then = new Date(iso).getTime();
+        var now = Date.now();
+        var diff = Math.max(0, now - then);
+        var min = Math.floor(diff / 60000);
+        if (min < 1) return 'agora';
+        if (min < 60) return 'há ' + min + ' min';
+        var h = Math.floor(min / 60);
+        if (h < 24) return 'há ' + h + 'h';
+        var d = Math.floor(h / 24);
+        if (d < 30) return 'há ' + d + ' dia' + (d > 1 ? 's' : '');
+        var mo = Math.floor(d / 30);
+        return 'há ' + mo + ' mês' + (mo > 1 ? 'es' : '');
+      } catch (e) { return ''; }
+    }
+
+    function renderCnaeOpportunities() {
+      var subs = getFilteredSubmissions();
+      var cnaeLeads = subs.filter(function(s) {
+        return s.answers && s.answers.cnpj_wants_contact === true;
+      });
+
+      var section = document.getElementById('cnae-section');
+      var badge = document.getElementById('cnae-count-badge');
+      var list = document.getElementById('cnae-list');
+      if (!section || !badge || !list) return;
+
+      badge.textContent = cnaeLeads.length;
+
+      if (cnaeLeads.length === 0) {
+        section.classList.add('empty');
+        badge.classList.add('zero');
+        list.innerHTML = '<div class="cnae-empty-text">Nenhum lead pediu contato sobre CNAEs extras no período filtrado.</div>';
+        return;
+      }
+
+      section.classList.remove('empty');
+      badge.classList.remove('zero');
+
+      // Sort by most recent first
+      cnaeLeads.sort(function(a, b) {
+        return new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime();
+      });
+
+      var html = '';
+      cnaeLeads.forEach(function(s) {
+        var a = s.answers || {};
+        var name = a.name || (a.pessoas && a.pessoas[0] && a.pessoas[0].nome) || '-';
+        var email = a.email || '-';
+        var phone = a.whatsapp || (a.pessoas && a.pessoas[0] && a.pessoas[0].whatsapp) || '';
+        var phoneDigits = String(phone).replace(/\D/g, '');
+        var tier = (s.score && s.score.tier) || '?';
+        var tierBg = {
+          A: '#14532d', B: '#0c2d48', C: '#422006', D: '#431407', E: '#450a0a'
+        }[tier] || '#333';
+        var tierColor = {
+          A: '#22c55e', B: '#3b82f6', C: '#eab308', D: '#f97316', E: '#ef4444'
+        }[tier] || '#888';
+
+        html += '<div class="cnae-row">';
+        html += '<div><div class="cnae-name">' + name + '</div><div class="cnae-time">' + timeAgo(s.timestamp) + '</div></div>';
+        html += '<div class="cnae-whatsapp">' + (phoneDigits ? '<a href="https://wa.me/55' + phoneDigits + '" target="_blank">' + phone + ' 💬</a>' : '-') + '</div>';
+        html += '<div class="cnae-email" title="' + email + '">' + email + '</div>';
+        html += '<div class="cnae-tier" style="background:' + tierBg + ';color:' + tierColor + ';">Tier ' + tier + '</div>';
+        html += '<div><button class="btn btn-small" style="padding:5px 10px;font-size:11px;" onclick="copyToClipboard(\'' + email.replace(/'/g, "\\'") + '\', this)">Copiar email</button></div>';
+        html += '</div>';
+      });
+      list.innerHTML = html;
+    }
+
+    function openAllFiles(displayIdx) {
+      var subs = getFilteredSubmissions().slice().reverse();
+      var s = subs[displayIdx];
+      if (!s || !s.answers || !s.answers.pessoas_files) return;
+      var files = s.answers.pessoas_files;
+      var count = 0;
+      Object.keys(files).forEach(function(fk) {
+        var f = files[fk];
+        if (!f || !f.data) return;
+        setTimeout(function() {
+          var w = window.open();
+          if (w) {
+            w.document.write('<title>' + fk + '</title><body style="margin:0;background:#000;"><img src="' + f.data + '" style="max-width:100%;height:auto;display:block;margin:0 auto;"/>');
+          }
+        }, count * 120);
+        count++;
+      });
+      if (count === 0) alert('Nenhum arquivo encontrado.');
+    }
+
+    function copyLeadSummary(displayIdx, btn) {
+      var subs = getFilteredSubmissions().slice().reverse();
+      var s = subs[displayIdx];
+      if (!s) return;
+      var a = s.answers || {};
+      var p0 = (a.pessoas && a.pessoas[0]) || {};
+      var lines = [
+        '=== RESUMO DO LEAD ===',
+        'Nome: ' + (a.name || p0.nome || '-'),
+        'Email: ' + (a.email || '-'),
+        'WhatsApp: ' + (a.whatsapp || p0.whatsapp || '-'),
+        'CPF: ' + (p0.cpf || '-'),
+        '',
+        'Profissão: ' + (getLabel('q4', a.q4) || '-'),
+        'Faixa etária: ' + (getLabel('q3', a.q3) || '-'),
+        'Score: ' + (s.score && s.score.score !== undefined ? s.score.score : '-') + '/100',
+        'Tier: ' + (s.score && s.score.tier ? s.score.tier : '-'),
+        '',
+        'Investimento disponível: ' + (getLabel('q14', a.q14) || '-'),
+        'Reinvestimento 4m: ' + (getLabel('q15', a.q15) || '-'),
+        'Horas/dia: ' + (getLabel('q16', a.q16) || '-'),
+        'Conhecimento Amazon: ' + (getLabel('q17', a.q17) || '-'),
+        'Habilidades PC: ' + (getLabel('q19', a.q19) || '-'),
+        'Meta 6 meses: ' + (getLabel('q20', a.q20) || '-'),
+        '',
+        'Loja ativa Amazon: ' + (getLabel('q7', a.q7) || '-'),
+        'Vende outro marketplace: ' + (getLabel('q8', a.q8) || '-'),
+        'Objetivo: ' + (getLabel('q9', a.q9) || '-'),
+        '',
+        'CNPJ exclusivo marketplaces: ' + (getLabel('cnpj_exclusivity', a.cnpj_exclusivity) || '-'),
+        'Quer contato sobre CNAEs: ' + (getLabel('cnpj_wants_contact', a.cnpj_wants_contact) || '-'),
+        '',
+        'Data da submissão: ' + formatDate(s.timestamp)
+      ];
+      copyToClipboard(lines.join('\n'), btn);
+    }
+
+    function copyToClipboard(text, btn) {
+      if (!navigator.clipboard) {
+        // Fallback
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta);
+      } else {
+        navigator.clipboard.writeText(text).catch(function(){});
+      }
+      if (btn) {
+        var orig = btn.textContent;
+        btn.textContent = '✓ Copiado';
+        btn.style.color = 'var(--green)';
+        setTimeout(function(){
+          btn.textContent = orig;
+          btn.style.color = '';
+        }, 1200);
+      }
+    }
+
+    /* ==================== TRENDING ==================== */
+    var trendingPeriod = 'daily'; // 'daily', 'weekly', 'monthly'
+
+    function setTrendingPeriod(period) {
+      trendingPeriod = period;
+      document.querySelectorAll('.trending-tab').forEach(function(btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-period') === period);
+      });
+      renderTrending();
+    }
+
+    function startOfDay(d) {
+      var x = new Date(d);
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+
+    function startOfWeek(d) {
+      var x = startOfDay(d);
+      var day = x.getDay(); // 0 = Sunday
+      var diff = (day === 0 ? -6 : 1) - day; // Segunda como início
+      x.setDate(x.getDate() + diff);
+      return x;
+    }
+
+    function startOfMonth(d) {
+      var x = new Date(d);
+      x.setDate(1);
+      x.setHours(0, 0, 0, 0);
+      return x;
+    }
+
+    function formatBucketLabel(date, period) {
+      var months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+      if (period === 'daily') {
+        return String(date.getDate()).padStart(2, '0') + '/' + months[date.getMonth()];
+      }
+      if (period === 'weekly') {
+        var end = new Date(date);
+        end.setDate(end.getDate() + 6);
+        return String(date.getDate()).padStart(2, '0') + '/' + months[date.getMonth()] + '-' + String(end.getDate()).padStart(2, '0') + '/' + months[end.getMonth()];
+      }
+      if (period === 'monthly') {
+        return months[date.getMonth()] + '/' + String(date.getFullYear()).slice(-2);
+      }
+      return '';
+    }
+
+    function getBucketKey(date, period) {
+      var d;
+      if (period === 'daily') d = startOfDay(date);
+      else if (period === 'weekly') d = startOfWeek(date);
+      else d = startOfMonth(date);
+      return d.getTime();
+    }
+
+    function renderTrending() {
+      var subs = getFilteredSubmissions();
+      var now = new Date();
+
+      // Config per period
+      var bucketCount, bucketLabel, currentLabel, previousLabel, avgLabel;
+      if (trendingPeriod === 'daily') {
+        bucketCount = 14;
+        bucketLabel = 'Últimos 14 dias';
+        currentLabel = 'Hoje';
+        previousLabel = 'Ontem';
+        avgLabel = 'Média (últimos 7 dias)';
+      } else if (trendingPeriod === 'weekly') {
+        bucketCount = 12;
+        bucketLabel = 'Últimas 12 semanas';
+        currentLabel = 'Esta semana';
+        previousLabel = 'Semana passada';
+        avgLabel = 'Média (últimas 4 semanas)';
+      } else {
+        bucketCount = 12;
+        bucketLabel = 'Últimos 12 meses';
+        currentLabel = 'Este mês';
+        previousLabel = 'Mês passado';
+        avgLabel = 'Média (últimos 6 meses)';
+      }
+
+      // Build buckets from oldest to newest
+      var buckets = [];
+      for (var i = bucketCount - 1; i >= 0; i--) {
+        var d = new Date(now);
+        if (trendingPeriod === 'daily') d.setDate(d.getDate() - i);
+        else if (trendingPeriod === 'weekly') d.setDate(d.getDate() - i * 7);
+        else d.setMonth(d.getMonth() - i);
+        var key = getBucketKey(d, trendingPeriod);
+        buckets.push({ key: key, label: formatBucketLabel(new Date(key), trendingPeriod), count: 0 });
+      }
+
+      // Count submissions per bucket
+      subs.forEach(function(s) {
+        var ts = new Date(s.timestamp);
+        var k = getBucketKey(ts, trendingPeriod);
+        var b = buckets.find(function(x) { return x.key === k; });
+        if (b) b.count++;
+      });
+
+      // KPIs
+      var current = buckets[buckets.length - 1].count;
+      var previous = buckets.length >= 2 ? buckets[buckets.length - 2].count : 0;
+      var delta = current - previous;
+      var deltaPct = previous > 0 ? Math.round((delta / previous) * 100) : (current > 0 ? 100 : 0);
+
+      var avgWindow = trendingPeriod === 'daily' ? 7 : (trendingPeriod === 'weekly' ? 4 : 6);
+      var avgRange = buckets.slice(Math.max(0, buckets.length - avgWindow - 1), buckets.length - 1);
+      var avgSum = avgRange.reduce(function(a, b) { return a + b.count; }, 0);
+      var avg = avgRange.length > 0 ? (avgSum / avgRange.length).toFixed(1) : '0';
+
+      var peak = buckets.reduce(function(a, b) { return b.count > a.count ? b : a; }, { count: 0, label: '-' });
+
+      // Update KPIs
+      document.getElementById('tk-label-current').textContent = currentLabel;
+      document.getElementById('tk-label-previous').textContent = previousLabel;
+      document.getElementById('tk-label-avg').textContent = avgLabel;
+      document.getElementById('tk-current').textContent = current;
+      document.getElementById('tk-previous').textContent = previous;
+      document.getElementById('tk-avg').textContent = avg;
+      document.getElementById('tk-peak').textContent = peak.count;
+      document.getElementById('tk-peak-when').textContent = peak.count > 0 ? peak.label : '—';
+
+      var deltaEl = document.getElementById('tk-delta');
+      deltaEl.className = 'tk-trend ' + (delta > 0 ? 'up' : (delta < 0 ? 'down' : 'flat'));
+      deltaEl.textContent = delta > 0 ? '▲ +' + delta + ' (+' + deltaPct + '%)' : (delta < 0 ? '▼ ' + delta + ' (' + deltaPct + '%)' : '— vs anterior');
+
+      // Render bars
+      document.getElementById('trending-chart-title').textContent = bucketLabel;
+      var maxCount = Math.max.apply(null, buckets.map(function(b) { return b.count; }).concat([1]));
+      var barsHtml = '';
+      var labelsHtml = '';
+      buckets.forEach(function(b, i) {
+        var heightPct = maxCount > 0 ? (b.count / maxCount) * 100 : 0;
+        var hasValue = b.count > 0;
+        var isCurrent = i === buckets.length - 1;
+        barsHtml += '<div class="trending-bar-col' + (hasValue ? ' has-value' : '') + '" title="' + b.label + ': ' + b.count + ' lead' + (b.count !== 1 ? 's' : '') + '">';
+        barsHtml += '<span class="trending-bar-value">' + b.count + '</span>';
+        barsHtml += '<div class="trending-bar" style="height:' + heightPct + '%;"></div>';
+        barsHtml += '</div>';
+        labelsHtml += '<div class="trending-label' + (isCurrent ? ' today' : '') + '">' + b.label + '</div>';
+      });
+      document.getElementById('trending-bars').innerHTML = barsHtml;
+      document.getElementById('trending-labels').innerHTML = labelsHtml;
+    }
+
+    function renderFunnel() {
+      var sessions = getFilteredSessions();
+      var totalStarted = sessions.length;
+      var completedCount = sessions.filter(function(s) { return s.completed; }).length;
+      var abandonedCount = totalStarted - completedCount;
+      var conversionRate = totalStarted > 0 ? Math.round(completedCount / totalStarted * 100) : 0;
+
+      // KPIs
+      document.getElementById('fk-started').textContent = totalStarted;
+      document.getElementById('fk-completed').innerHTML = completedCount + ' <small>(' + conversionRate + '%)</small>';
+      document.getElementById('fk-abandoned').innerHTML = abandonedCount + ' <small>(' + (100 - conversionRate) + '%)</small>';
+      document.getElementById('fk-conversion').textContent = conversionRate + '%';
+
+      // Count how many sessions reached each screen (lastScreenOrder >= screenOrder)
+      var list = document.getElementById('funnel-list');
+      if (!list) return;
+
+      if (totalStarted === 0) {
+        list.innerHTML = '<div style="padding:32px 20px;text-align:center;color:var(--gray);font-size:13px;">Nenhuma sessão registrada ainda. Abra o formulário pelo menos uma vez para começar a coletar dados.</div>';
+        return;
+      }
+
+      var counts = FUNNEL_SCREENS.map(function(scr, idx) {
+        var reached = 0;
+        for (var i = 0; i < sessions.length; i++) {
+          var s = sessions[i];
+          var lastOrder = (typeof s.lastScreenOrder === 'number') ? s.lastScreenOrder : -1;
+          if (lastOrder >= idx) reached++;
+        }
+        return reached;
+      });
+
+      var html = '';
+      for (var i = 0; i < FUNNEL_SCREENS.length; i++) {
+        var scr = FUNNEL_SCREENS[i];
+        var reached = counts[i];
+        var pctOfTotal = totalStarted > 0 ? Math.round(reached / totalStarted * 100) : 0;
+
+        // Drop from previous step
+        var dropAbs = 0, dropPct = 0;
+        if (i > 0) {
+          var prev = counts[i - 1];
+          dropAbs = prev - reached;
+          dropPct = prev > 0 ? Math.round(dropAbs / prev * 100) : 0;
+        }
+
+        var rowCls = scr.id === 'screen-result' ? ' completed-row' : '';
+        html += '<div class="funnel-row' + rowCls + '">';
+        html += '<div class="fr-num">' + (i + 1) + '</div>';
+        html += '<div class="fr-label">' + scr.label + (scr.sub ? '<small>' + scr.sub + '</small>' : '') + '</div>';
+        html += '<div class="fr-bar-wrap">';
+        html += '<div class="fr-bar-fill" style="width:' + pctOfTotal + '%;"></div>';
+        html += '<div class="fr-bar-label">' + pctOfTotal + '% do total</div>';
+        html += '</div>';
+        html += '<div class="fr-count">' + reached + '<small>de ' + totalStarted + '</small></div>';
+        if (i === 0) {
+          html += '<div class="fr-drop no-drop">-</div>';
+        } else if (dropAbs === 0) {
+          html += '<div class="fr-drop no-drop">0 sa\u00edram</div>';
+        } else {
+          html += '<div class="fr-drop has-drop">−' + dropAbs + ' (−' + dropPct + '%)</div>';
+        }
+        html += '</div>';
+      }
+
+      list.innerHTML = html;
+    }
+
+    function render() {
+      var submissions = getFilteredSubmissions();
+      var tbody = document.getElementById('table-body');
+      var empty = document.getElementById('empty-state');
+
+      // Summary - CHANGE 9: percentages
+      document.getElementById('count-total').textContent = submissions.length;
+      var tierCounts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      submissions.forEach(function(s) {
+        var tier = s.score && s.score.tier ? s.score.tier : '?';
+        if (tierCounts[tier] !== undefined) tierCounts[tier]++;
+      });
+
+      var total = submissions.length;
+      function tierPct(count) { return total > 0 ? Math.round(count / total * 100) : 0; }
+
+      document.getElementById('count-a').innerHTML = tierCounts.A + ' <small>(' + tierPct(tierCounts.A) + '%)</small>';
+      document.getElementById('count-b').innerHTML = tierCounts.B + ' <small>(' + tierPct(tierCounts.B) + '%)</small>';
+      document.getElementById('count-c').innerHTML = tierCounts.C + ' <small>(' + tierPct(tierCounts.C) + '%)</small>';
+      document.getElementById('count-d').innerHTML = tierCounts.D + ' <small>(' + tierPct(tierCounts.D) + '%)</small>';
+      document.getElementById('count-e').innerHTML = tierCounts.E + ' <small>(' + tierPct(tierCounts.E) + '%)</small>';
+
+      document.getElementById('subtitle').textContent = submissions.length + ' submissao(oes) registrada(s)';
+
+      // Update search match count
+      if (searchQuery) {
+        var matchCountEl = document.getElementById('search-match-count');
+        var clearBtn = document.getElementById('search-clear');
+        if (matchCountEl && clearBtn) {
+          matchCountEl.textContent = submissions.length + ' match(es)';
+          matchCountEl.classList.add('visible');
+          matchCountEl.style.right = '70px';
+        }
+      }
+
+      if (submissions.length === 0) {
+        empty.style.display = 'block';
+        tbody.innerHTML = '';
+        renderAnalytics(submissions);
+        renderFunnel();
+        renderCnaeOpportunities();
+        renderTrending();
+        return;
+      }
+      empty.style.display = 'none';
+
+      // Render table (newest first)
+      var sorted = submissions.slice().reverse();
+      var html = '';
+
+      sorted.forEach(function(s, displayIdx) {
+        var a = s.answers || {};
+        var score = s.score || {};
+        var tier = score.tier || '?';
+        var scoreVal = score.score !== undefined ? score.score : '-';
+        var overrideReason = score.overrideReason || null;
+        var rowClass = overrideReason === 'invest_alto' ? ' class="override-row-alto"' : (overrideReason === 'invest_baixo' ? ' class="override-row-baixo"' : '');
+
+        html += '<tr' + rowClass + ' onclick="toggleExpand(' + displayIdx + ')">';
+        html += '<td>' + formatDate(s.timestamp) + '</td>';
+        html += '<td>' + highlightMatch(a.name || '-') + '</td>';
+        var phone = a.whatsapp || '';
+        var phoneDigits = phone.replace(/\D/g, '');
+        var phoneLink = phoneDigits ? '<a href="https://wa.me/55' + phoneDigits + '" target="_blank" style="color:var(--green);text-decoration:none;" title="Abrir WhatsApp" onclick="event.stopPropagation()">' + highlightMatch(phone) + ' 💬</a>' : '-';
+        html += '<td>' + phoneLink + '</td>';
+        html += '<td>' + highlightMatch(a.email || '-') + '</td>';
+        html += '<td>' + getLabel('q4', a.q4) + '</td>';
+        html += '<td>' + getLabel('q14', a.q14) + '</td>';
+        html += '<td>' + getLabel('q15', a.q15) + '</td>';
+        html += '<td>' + getLabel('q16', a.q16) + '</td>';
+        html += '<td>' + scoreVal + '/100</td>';
+        var badgeClass = 'tier-badge tier-' + tier;
+        var badgeText = tier;
+        if (overrideReason === 'invest_alto') {
+          badgeClass += ' override-alto';
+          badgeText = '⭐ A (AUTO)';
+        } else if (overrideReason === 'invest_baixo') {
+          badgeClass += ' override-baixo';
+          badgeText = '⚠️ E (AUTO)';
+        }
+        html += '<td><span class="' + badgeClass + '">' + badgeText + '</span></td>';
+        html += '</tr>';
+
+        // Expanded row
+        if (expandedIdx === displayIdx) {
+          // Build quick actions bar
+          var p0 = (a.pessoas && a.pessoas[0]) || {};
+          var qaName = a.name || p0.nome || '';
+          var qaEmail = a.email || p0.email || '';
+          var qaWp = a.whatsapp || p0.whatsapp || '';
+          var qaCpf = p0.cpf || '';
+          var wpDigitsQa = String(qaWp).replace(/\D/g, '');
+
+          // Count files for "open all"
+          var allFileKeys = [];
+          if (a.pessoas_files) {
+            Object.keys(a.pessoas_files).forEach(function(fk) {
+              if (a.pessoas_files[fk] && a.pessoas_files[fk].data) allFileKeys.push(fk);
+            });
+          }
+
+          var jsonEscaped = JSON.stringify({
+            nome: qaName,
+            email: qaEmail,
+            whatsapp: qaWp,
+            cpf: qaCpf,
+            score: score.score,
+            tier: tier
+          }).replace(/'/g, "\\'");
+
+          html += '<tr class="expanded-row"><td colspan="10">';
+          html += '<div class="expanded-content">';
+          html += '<div class="quick-actions-bar">';
+          html += '<span class="quick-actions-label">Ações rápidas:</span>';
+          if (qaName) html += '<button class="qa-btn" onclick="event.stopPropagation();copyToClipboard(\'' + qaName.replace(/'/g, "\\'") + '\', this)">📋 Nome</button>';
+          if (qaEmail) html += '<button class="qa-btn" onclick="event.stopPropagation();copyToClipboard(\'' + qaEmail.replace(/'/g, "\\'") + '\', this)">📋 Email</button>';
+          if (qaWp) html += '<button class="qa-btn" onclick="event.stopPropagation();copyToClipboard(\'' + qaWp.replace(/'/g, "\\'") + '\', this)">📋 WhatsApp</button>';
+          if (qaCpf) html += '<button class="qa-btn" onclick="event.stopPropagation();copyToClipboard(\'' + qaCpf.replace(/'/g, "\\'") + '\', this)">📋 CPF</button>';
+          if (wpDigitsQa) html += '<a class="qa-btn qa-btn-wp" href="https://wa.me/55' + wpDigitsQa + '" target="_blank" onclick="event.stopPropagation()">💬 Abrir WhatsApp</a>';
+          if (qaEmail) html += '<a class="qa-btn" href="mailto:' + qaEmail + '?subject=Mentoria%20ROI" onclick="event.stopPropagation()">📧 Enviar email</a>';
+          if (allFileKeys.length > 0) html += '<button class="qa-btn" onclick="event.stopPropagation();openAllFiles(' + displayIdx + ')">🗂️ Abrir todos os anexos (' + allFileKeys.length + ')</button>';
+          html += '<button class="qa-btn" onclick="event.stopPropagation();copyLeadSummary(' + displayIdx + ', this)">📄 Copiar resumo</button>';
+          html += '</div>';
+          html += '<div class="expanded-grid">';
+          var pri = { name: -3, whatsapp: -2, email: -1 };
+          var keys = Object.keys(a).sort(function(x, y) {
+            var px = pri[x] !== undefined ? pri[x] : (parseInt(x.replace(/\D/g, '')) || 999);
+            var py = pri[y] !== undefined ? pri[y] : (parseInt(y.replace(/\D/g, '')) || 999);
+            return px - py;
+          });
+          // Score questions with point values (Q18 removido)
+          var scorePointsMap = {
+            q14: [5, 15, 30, 40, 50],
+            q15: [0, 5, 10, 15, 20],
+            q16: [5, 10, 20, 30],
+            q17: [0, 4, 8, 12],
+            q19: [0, 3, 5, 8]
+          };
+          var scoreMaxLabels = {
+            q14: '/50 pts',
+            q15: '/20 pts',
+            q16: '/30 pts',
+            q17: '/12 pts',
+            q19: '/8 pts'
+          };
+
+          keys.forEach(function(k) {
+            if (k.endsWith('_file')) return;
+            if (hiddenKeys.indexOf(k) !== -1) return; // skip hidden keys
+            var label = questionLabels[k] || k.toUpperCase();
+            var value = getLabel(k, a[k], a);
+            var isScore = !!scorePointsMap[k];
+
+            // Handle pessoas array (dynamic mega screen data)
+            if (k === 'pessoas' && Array.isArray(a[k])) {
+              html += '<div class="expanded-item" style="grid-column:1/-1;"><span class="el">&#128101; Dados dos Sócios:</span><div class="ev" style="display:flex;flex-direction:column;gap:12px;margin-top:8px;">';
+
+              var fileLabels = {
+                doc: 'Documento (RG/CNH)',
+                endereco: 'Comprovante de endereço',
+                certidao: 'Certidão de casamento'
+              };
+
+              a[k].forEach(function(pessoa, pIdx) {
+                var pLabel = pIdx === 0 ? '👤 Responsável' : '👥 Sócio ' + pIdx;
+                var pPrefix = 'p' + pIdx;
+
+                html += '<div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;">';
+                html += '<div style="font-size:13px;font-weight:700;color:var(--yellow);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,153,0,0.2);">' + pLabel + '</div>';
+
+                // Dados
+                html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">';
+                if (pessoa.nome) html += '<div><span style="color:var(--gray);">Nome:</span> <span style="color:var(--white);">' + pessoa.nome + '</span></div>';
+                if (pessoa.cpf) html += '<div><span style="color:var(--gray);">CPF:</span> <span style="color:var(--white);">' + pessoa.cpf + '</span></div>';
+                if (pessoa.rg) html += '<div><span style="color:var(--gray);">RG:</span> <span style="color:var(--white);">' + pessoa.rg + '</span></div>';
+                if (pessoa.profissao) html += '<div><span style="color:var(--gray);">Profissão:</span> <span style="color:var(--white);">' + pessoa.profissao + '</span></div>';
+                if (pessoa.email) html += '<div><span style="color:var(--gray);">E-mail:</span> <span style="color:var(--white);">' + pessoa.email + '</span></div>';
+                if (pessoa.cidade_nascimento) html += '<div><span style="color:var(--gray);">Cidade/UF nasc.:</span> <span style="color:var(--white);">' + pessoa.cidade_nascimento + '</span></div>';
+                if (pessoa.data_nascimento) html += '<div><span style="color:var(--gray);">Nascimento:</span> <span style="color:var(--white);">' + pessoa.data_nascimento + '</span></div>';
+                if (pessoa.estado_civil) html += '<div><span style="color:var(--gray);">Estado civil:</span> <span style="color:var(--white);">' + pessoa.estado_civil + '</span></div>';
+                if (pessoa.regime_casamento) html += '<div><span style="color:var(--gray);">Regime:</span> <span style="color:var(--white);">' + pessoa.regime_casamento + '</span></div>';
+                if (pessoa.whatsapp) {
+                  var pWpDigits = String(pessoa.whatsapp).replace(/\D/g, '');
+                  var pWpLink = pWpDigits ? '<a href="https://wa.me/55' + pWpDigits + '" target="_blank" style="color:var(--green);text-decoration:none;">' + pessoa.whatsapp + '</a>' : pessoa.whatsapp;
+                  html += '<div><span style="color:var(--gray);">WhatsApp:</span> ' + pWpLink + '</div>';
+                }
+                if (pessoa.cep) html += '<div><span style="color:var(--gray);">CEP:</span> <span style="color:var(--white);">' + pessoa.cep + '</span></div>';
+                if (pessoa.servidor_publico) html += '<div><span style="color:var(--gray);">Servidor Pub.:</span> <span style="color:var(--white);">' + pessoa.servidor_publico + '</span></div>';
+                if (pessoa.beneficio_inss) html += '<div><span style="color:var(--gray);">INSS:</span> <span style="color:var(--white);">' + pessoa.beneficio_inss + '</span></div>';
+                if (pessoa.certificado_digital) html += '<div><span style="color:var(--gray);">Cert. Digital:</span> <span style="color:var(--white);">' + pessoa.certificado_digital + '</span></div>';
+                if (pessoa.cnh_ativa) html += '<div><span style="color:var(--gray);">CNH:</span> <span style="color:var(--white);">' + pessoa.cnh_ativa + '</span></div>';
+                if (pessoa.autodeclaracao_raca) html += '<div><span style="color:var(--gray);">Raça:</span> <span style="color:var(--white);">' + pessoa.autodeclaracao_raca + '</span></div>';
+                if (pessoa.percentual) html += '<div><span style="color:var(--gray);">Participação:</span> <span style="color:var(--yellow);font-weight:700;">' + pessoa.percentual + '</span></div>';
+                if (pessoa.endereco_completo) html += '<div style="grid-column:1/-1;"><span style="color:var(--gray);">Endereço:</span> <span style="color:var(--white);">' + pessoa.endereco_completo + '</span></div>';
+                html += '</div>';
+
+                // Anexos DESTA pessoa
+                if (a.pessoas_files) {
+                  var pessoaFiles = [];
+                  Object.keys(a.pessoas_files).forEach(function(fk) {
+                    if (fk.indexOf(pPrefix + '_') === 0) {
+                      var tipo = fk.replace(pPrefix + '_', '');
+                      var fd = a.pessoas_files[fk];
+                      if (fd && fd.data) {
+                        pessoaFiles.push({ tipo: tipo, fd: fd });
+                      }
+                    }
+                  });
+                  if (pessoaFiles.length > 0) {
+                    html += '<div style="margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);">';
+                    html += '<div style="font-size:10px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">Anexos</div>';
+                    html += '<div style="display:flex;flex-direction:column;gap:6px;">';
+                    pessoaFiles.forEach(function(f) {
+                      var tipoLabel = fileLabels[f.tipo] || f.tipo;
+                      html += '<div style="display:flex;align-items:center;gap:8px;font-size:11px;flex-wrap:wrap;">';
+                      html += '<span style="color:var(--gray-light);flex:1;min-width:120px;">📎 ' + tipoLabel + ':</span>';
+                      html += '<a href="javascript:void(0)" onclick="var w=window.open();w.document.write(\'<img src=&quot;\'+this.dataset.src+\'&quot; style=&quot;max-width:100%&quot;>\');w.document.title=\'' + tipoLabel + '\';" data-src="' + f.fd.data + '" class="file-download-btn" style="font-size:10px;">🔗 Abrir</a>';
+                      html += '<a href="' + f.fd.data + '" download="' + f.fd.name + '" class="file-download-btn" style="font-size:10px;">⬇ Baixar</a>';
+                      html += '</div>';
+                    });
+                    html += '</div></div>';
+                  }
+                }
+
+                html += '</div>';
+              });
+
+              html += '</div></div>';
+              return;
+            }
+
+            var fileData = a[k + '_file'];
+            if (fileData && fileData.data) {
+              var fileIdx = Object.keys(a).filter(function(x){return x.endsWith('_file')}).indexOf(k + '_file');
+              html += '<div class="expanded-item"><span class="el">' + label + ':</span><div class="ev" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">';
+              html += '<a href="javascript:void(0)" onclick="var w=window.open();w.document.write(\'<img src=&quot;\'+this.dataset.src+\'&quot; style=&quot;max-width:100%&quot;>\');w.document.title=\'' + label + '\';" data-src="' + fileData.data + '" class="file-download-btn">&#128279; Abrir arquivo</a>';
+              html += '<a href="' + fileData.data + '" download="' + fileData.name + '" class="file-download-btn">&#11015; Baixar</a>';
+              html += '</div></div>';
+            } else if (isScore) {
+              var pts = scorePointsMap[k][a[k]];
+              var ptsLabel = pts !== undefined ? pts + scoreMaxLabels[k] : '';
+              // Special override styling for Q14 (investimento)
+              var overrideClass = '';
+              var overrideTag = '';
+              if (k === 'q14' && (a.q14 === 0 || a.q14 === 1)) {
+                overrideClass = ' expanded-score-baixo';
+                overrideTag = ' <span style="background:#5c0a0a;color:#ff6b6b;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;">TIER E AUTO</span>';
+              } else if (k === 'q14' && a.q14 === 4) {
+                overrideClass = ' expanded-score-alto';
+                overrideTag = ' <span style="background:linear-gradient(135deg,#6b4f00,#c8a000);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:99px;margin-left:8px;">TIER A AUTO</span>';
+              }
+              html += '<div class="expanded-item expanded-score' + overrideClass + '"><span class="el">' + label + ':</span><span class="ev">' + value + ' <span style="color:var(--yellow);font-size:12px;margin-left:6px;">' + ptsLabel + '</span>' + overrideTag + '</span></div>';
+            } else if (k === 'whatsapp') {
+              var wpDigits = String(value).replace(/\D/g, '');
+              var wpLink = wpDigits ? '<a href="https://wa.me/55' + wpDigits + '" target="_blank" style="color:var(--green);text-decoration:none;">' + value + '</a>' : value;
+              html += '<div class="expanded-item"><span class="el">' + label + ':</span><span class="ev">' + wpLink + '</span></div>';
+            } else {
+              html += '<div class="expanded-item"><span class="el">' + label + ':</span><span class="ev">' + value + '</span></div>';
+            }
+          });
+          html += '</div></div></td></tr>';
+        }
+      });
+
+      tbody.innerHTML = html;
+
+      // CHANGE 8: Render analytics
+      renderAnalytics(submissions);
+      // Funnel drop-off per screen
+      renderFunnel();
+      // CNAE upsell opportunities
+      renderCnaeOpportunities();
+      // Trending daily/weekly/monthly
+      renderTrending();
+    }
+
+    function toggleExpand(idx) {
+      expandedIdx = expandedIdx === idx ? -1 : idx;
+      render();
+    }
+
+    /* CHANGE 8: Analytics per question */
+    function renderAnalytics(submissions) {
+      var grid = document.getElementById('analytics-grid');
+      if (!grid) return;
+
+      var mcQuestions = {
+        q2: { title: 'Gênero', labels: optionLabels.q2 },
+        q3: { title: 'Faixa Etaria', labels: optionLabels.q3 },
+        q4: { title: 'Profissao', labels: optionLabels.q4 },
+        q5: { title: 'Computador Próprio', labels: optionLabels.q5 },
+        q6: { title: 'Periodo Operacao', labels: optionLabels.q6 },
+        q7: { title: 'Loja Ativa Amazon', labels: optionLabels.q7 },
+        q8: { title: 'Outro Marketplace', labels: optionLabels.q8 },
+        q9: { title: 'Objetivo Amazon', labels: optionLabels.q9 },
+        q10: { title: 'Mineracao', labels: optionLabels.q10 },
+        q11: { title: 'Primeira Compra', labels: optionLabels.q11 },
+        q12: { title: 'Oferta', labels: optionLabels.q12 },
+        q13: { title: 'Primeira Venda', labels: optionLabels.q13 },
+        q14: { title: 'Investimento Disponível', labels: optionLabels.q14 },
+        q15: { title: 'Reinvestimento', labels: optionLabels.q15 },
+        q16: { title: 'Horas/Dia', labels: optionLabels.q16 },
+        q17: { title: 'Conhecimento Amazon', labels: optionLabels.q17 },
+        q19: { title: 'Habilidades PC', labels: optionLabels.q19 },
+        q20: { title: 'Meta Faturamento', labels: optionLabels.q20 },
+        q21: { title: 'Quem Opera', labels: optionLabels.q21 },
+        q25: { title: 'Qtd Sócios', labels: optionLabels.q25 },
+        q29: { title: 'Capital Social', labels: optionLabels.q29 }
+      };
+
+      var html = '';
+      var mcKeys = Object.keys(mcQuestions);
+      for (var ki = 0; ki < mcKeys.length; ki++) {
+        var key = mcKeys[ki];
+        var config = mcQuestions[key];
+        var counts = {};
+        for (var ci = 0; ci < config.labels.length; ci++) { counts[ci] = 0; }
+        var qTotal = 0;
+
+        submissions.forEach(function(s) {
+          var val = s.answers ? s.answers[key] : undefined;
+          if (val !== undefined && val !== null && counts[val] !== undefined) {
+            counts[val]++;
+            qTotal++;
+          }
+        });
+
+        if (qTotal === 0) continue;
+
+        var maxCount = 0;
+        for (var ck in counts) { if (counts[ck] > maxCount) maxCount = counts[ck]; }
+
+        html += '<div class="analytics-card"><h3>' + config.title + '</h3><div class="analytics-bars">';
+        for (var li = 0; li < config.labels.length; li++) {
+          var label = config.labels[li];
+          var count = counts[li] || 0;
+          var pct = qTotal > 0 ? Math.round(count / qTotal * 100) : 0;
+          var barWidth = maxCount > 0 ? Math.round(count / maxCount * 100) : 0;
+          html += '<div class="analytics-bar-row">';
+          html += '<span class="bar-label">' + label + '</span>';
+          html += '<div class="bar-track"><div class="bar-fill" style="width:' + barWidth + '%"></div></div>';
+          html += '<span class="bar-value">' + count + ' (' + pct + '%)</span>';
+          html += '</div>';
+        }
+        html += '</div></div>';
+      }
+
+      grid.innerHTML = html;
+    }
+
+    function exportCSV() {
+      var submissions = getFilteredSubmissions();
+      if (submissions.length === 0) { alert('Nenhum dado para exportar.'); return; }
+
+      var allKeys = new Set();
+      submissions.forEach(function(s) {
+        if (s.answers) Object.keys(s.answers).forEach(function(k) { allKeys.add(k); });
+      });
+      var priority = { name: -3, whatsapp: -2, email: -1 };
+      var sortedKeys = Array.from(allKeys).sort(function(x, y) {
+        var px = priority[x] !== undefined ? priority[x] : (parseInt(x.replace(/\D/g, '')) || 999);
+        var py = priority[y] !== undefined ? priority[y] : (parseInt(y.replace(/\D/g, '')) || 999);
+        return px - py;
+      });
+
+      var headers = ['Data/Hora', 'Score', 'Tier'];
+      sortedKeys.forEach(function(k) {
+        headers.push(questionLabels[k] || k);
+      });
+
+      var rows = [headers.join(',')];
+      submissions.forEach(function(s) {
+        var a = s.answers || {};
+        var score = s.score || {};
+        var row = [
+          '"' + formatDate(s.timestamp) + '"',
+          score.score !== undefined ? score.score : '',
+          score.tier || ''
+        ];
+        sortedKeys.forEach(function(k) {
+          var val = getLabel(k, a[k], a).replace(/"/g, '""');
+          row.push('"' + val + '"');
+        });
+        rows.push(row.join(','));
+      });
+
+      var csv = rows.join('\n');
+      var blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      var url = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = url;
+      link.download = 'onboarding-roi-' + new Date().toISOString().slice(0, 10) + '.csv';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function clearData() {
+      if (!confirm('Tem certeza que deseja limpar todas as submissões E as sessões do funil? Essa ação não pode ser desfeita.')) return;
+      localStorage.removeItem('roi_submissions');
+      localStorage.removeItem('roi_sessions');
+      expandedIdx = -1;
+      render();
+    }
+
+    // Initial render
+    render();
+
+    // Auto-refresh every 5 seconds
+    setInterval(render, 5000);
+  </script>
+</body>
+</html>
